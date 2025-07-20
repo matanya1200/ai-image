@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form, Request
 from pydantic import BaseModel
 from typing import Optional
 from utils.auth_utils import get_current_user
@@ -68,7 +68,7 @@ def add_image(data: ImageAddRequest, user=Depends(get_current_user)):
 
 
 @router.post("/upload_image_file")
-def upload_image_file(name: str = Form(...), file: UploadFile = File(...), album_id: Optional[int] = Form(None), user=Depends(get_current_user)):
+def upload_image_file(request: Request, name: str = Form(...), file: UploadFile = File(...), album_id: Optional[int] = Form(None), user=Depends(get_current_user)):
     ensure_not_blocked(user)
 
     # בדיקת סיומת
@@ -85,7 +85,7 @@ def upload_image_file(name: str = Form(...), file: UploadFile = File(...), album
         shutil.copyfileobj(file.file, buffer)
 
     # יצירת URL גישה
-    image_url = f"http://localhost:8000/static/{filename}"
+    image_url = f"http://10.0.0.18:8000/static/{filename}"
 
     # שמירה במסד הנתונים
     conn = get_connection()

@@ -24,4 +24,4 @@ def generate_image_from_text(prompt: str) -> str:
     filename = f"image_{timestamp}.png"
     filepath = os.path.join("static", filename)
     image.save(filepath)
-    return f"http://localhost:8000/static/{filename}"
+    return f"http://10.0.0.18:8000/static/{filename}"
