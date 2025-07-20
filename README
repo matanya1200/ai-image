@@ -1,0 +1,12 @@
+server : 
+cd ai-image
+.\venv\Scripts\Activate  
+cd server
+uvicorn main:app --reload
+http://localhost:8000/docs#/  -  suagger של השרת
+
+net app :
+cd C:\Users\matan\OneDrive\Desktop\projects\ai-image\net-app
+npm run dev
+
+mobile app:
