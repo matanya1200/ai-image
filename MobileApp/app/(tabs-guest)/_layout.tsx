@@ -3,7 +3,26 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function GuestLayout() {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: "#20ab57ff",
+        tabBarInactiveTintColor: "#888",
+        tabBarStyle: {
+          backgroundColor: "#000000",
+          borderTopWidth: 1,
+          borderTopColor: "#eee",
+          paddingBottom: 5,
+          paddingTop: 5,
+        },
+        headerStyle: {
+          backgroundColor: "#000000ff",
+        },
+        headerTitleStyle: {
+          fontWeight: "bold",
+          color: "#42b33eff",
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{ 

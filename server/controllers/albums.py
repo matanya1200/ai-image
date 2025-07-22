@@ -63,7 +63,10 @@ def get_public_albums():
 def search_public_albums(query: str):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM albums WHERE is_public = TRUE AND is_blocked = FALSE AND name LIKE %s",
+    cursor.execute("""SELECT a.* , u.name AS creator_name
+                   FROM albums a  
+                   JOIN users u ON a.user_id = u.id
+                   WHERE a.is_public = TRUE AND a.is_blocked = FALSE AND a.name LIKE %s""",
                    ("%" + query + "%",))
     albums = cursor.fetchall()
     cursor.close()

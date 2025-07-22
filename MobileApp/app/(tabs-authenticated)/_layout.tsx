@@ -18,7 +18,26 @@ export default function AuthenticatedLayout() {
   }, []);
 
   return (
-    <Tabs>
+    <Tabs
+    screenOptions={{
+        tabBarActiveTintColor: "#5154e6ff",
+        tabBarInactiveTintColor: "#888",
+        tabBarStyle: {
+          backgroundColor: "#000000",
+          borderTopWidth: 1,
+          borderTopColor: "#eee",
+          paddingBottom: 5,
+          paddingTop: 5,
+        },
+        headerStyle: {
+          backgroundColor: "#000000ff",
+        },
+        headerTitleStyle: {
+          fontWeight: "bold",
+          color: "#7151e4ff",
+        },
+      }}
+    >
       <Tabs.Screen 
         name="index" 
         options={{ 
@@ -29,36 +48,6 @@ export default function AuthenticatedLayout() {
         }}
       />
 
-      <Tabs.Screen
-        name="my-images" 
-        options={{ 
-          title: "התמונות שלי", 
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
-          )
-        }}
-      />
-
-      <Tabs.Screen 
-        name="add-image" 
-        options={{ 
-          title: "הוספת תמונה", 
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="camera" size={size} color={color} />
-          )
-        }} 
-      />
-
-      <Tabs.Screen 
-        name="profile" 
-        options={{ 
-          title: "הפרופיל שלי", 
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
-          )
-        }} 
-      />
-
       <Tabs.Screen 
         name="albums" 
         options={{ 
@@ -67,6 +56,16 @@ export default function AuthenticatedLayout() {
             <Ionicons name="albums" size={size} color={color} />
           )
         }} 
+      />
+
+      <Tabs.Screen
+        name="my-images" 
+        options={{ 
+          title: "התמונות שלי", 
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="images" size={size} color={color} />
+          )
+        }}
       />
 
       <Tabs.Screen 
@@ -80,11 +79,31 @@ export default function AuthenticatedLayout() {
       />
 
       <Tabs.Screen 
+        name="add-image" 
+        options={{ 
+          title: "הוספת תמונה", 
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="image-outline" size={size} color={color} />
+          )
+        }} 
+      />
+
+      <Tabs.Screen 
         name="create-album" 
         options={{ 
           title: "יצירת אלבום", 
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="add" size={size} color={color} />
+            <Ionicons name="folder-open-outline" size={size} color={color} />
+          )
+        }} 
+      />
+
+      <Tabs.Screen 
+        name="profile" 
+        options={{ 
+          title: "הפרופיל שלי", 
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" size={size} color={color} />
           )
         }} 
       />
@@ -95,7 +114,7 @@ export default function AuthenticatedLayout() {
         options={{ 
           title: "ניהול משתמשים", 
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="people" size={size} color={color} />
+            <Ionicons name="people-outline" size={size} color={color} />
           ),
           href: isAdmin ? "/admin-users" : null
         }} 
@@ -106,7 +125,7 @@ export default function AuthenticatedLayout() {
         options={{ 
           title: "ניהול תגובות", 
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbubbles" size={size} color={color} />
+            <Ionicons name="chatbubble-ellipses-outline" size={size} color={color} />
           ),
           href: isAdmin ? "/admin-comments" : null
         }} 
@@ -117,8 +136,7 @@ export default function AuthenticatedLayout() {
         options={{ 
           title: "ניהול תמונות חסומות", 
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="shield" size={size} color={color} />
-            // או: <Ionicons name="ban" size={size} color={color} />
+            <Ionicons name="shield-checkmark-outline" size={size} color={color} />
           ),
           href: isAdmin ? "/blocked-images" : null
         }} 
