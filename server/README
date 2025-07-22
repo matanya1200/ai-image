@@ -1,0 +1,45 @@
+#📡 AI-IMAGE - שרת FastAPI
+
+ה-backend של המערכת בנוי עם FastAPI, כולל תמיכה ב:
+
+אימות משתמשים עם JWT
+
+העלאת קבצים
+
+יצירת תמונה בעזרת AI
+
+ניהול תגובות, תמונות ואלבומים
+
+## הפעלה
+
+```bash
+cd server
+pip install -r requirements.txt
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+שרת הפיתוח ירוץ בדרך כלל על:  
+`http://10.0.0.18:8000`
+
+הsuagger של השרת
+`http://localhost:8000/docs`
+
+## מבנה התיקייה
+
+controllers/ – קובצי ניהול עבור auth, albums, images, commits, users
+
+utils/ – פונקציות עזר לאימות, הרשאות ויצירת תמונה עם AI
+
+static/ – תמונות שמועלות מקומית נשמרות כאן
+
+.env – משתני סביבה כמו סיסמאות ומפתחות
+
+database.py – חיבור למסד נתונים
+
+main.py – קובץ ראשי של FastAPI
+
+## דרישות
+
+Python 3.10+
+
+ספריות: fastapi, uvicorn, python-multipart, bcrypt, psycopg2, jwt ועוד (ראו requirements.txt)

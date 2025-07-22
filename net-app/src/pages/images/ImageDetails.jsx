@@ -35,6 +35,7 @@ function ImageDetails({userId}) {
   const fetchImage = async () => {
     const res = await getImageById(id);
     setImage(res.data[0]);
+    console.log(res.data[0]);
   };
 
   const fetchComments = async () => {
@@ -117,6 +118,12 @@ function ImageDetails({userId}) {
                     <div className="alert alert-warning">
                       <i className="bi bi-exclamation-triangle me-2"></i>
                       משתמש חסום לא יכול להוסיף תגובה
+                    </div>
+                  )}
+                  {image.is_blocked &&(
+                    <div className="alert alert-warning">
+                      <i className="bi bi-exclamation-triangle me-2"></i>
+                      התמונה הזו חסומה
                     </div>
                   )}
                 </div>

@@ -27,6 +27,7 @@ function MyAlbums() {
   const fetchAlbums = async () => {
     try {
       const res = await getMyAlbums();
+      console.log(res.data);
       setAlbums(res.data);
       setLoading(false);
     } catch (error) {
@@ -155,6 +156,12 @@ function MyAlbums() {
                               </>
                             )}
                           </div>
+                          {(album.is_blocked == 1) && (
+                              <div className="alert alert-warning">
+                                <i className="bi bi-exclamation-triangle me-2"></i>
+                                האלבום הזה חסום
+                              </div>
+                            )}
                         </div>
                       </div>
                     </div>

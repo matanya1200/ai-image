@@ -137,7 +137,7 @@ def get_my_images(page: int = 1, limit: int = 25, user=Depends(get_current_user)
     total_count = cursor.fetchone()["total"]
 
     cursor.execute("""
-                   SELECT id, name, url, is_public, album_id 
+                   SELECT id, name, url, is_public, album_id, is_blocked
                    FROM images 
                    WHERE user_id = %s 
                    ORDER BY updated_at
@@ -258,13 +258,30 @@ def search_images(query: str, page: int = 1, limit: int = 25):
     }
 
 
+@router.get("/blocked")
+def get_blocked_public_images(user=Depends(get_current_user)):
+    admin_only(user)
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT images.*, users.name AS user_name
+        FROM images
+        JOIN users ON images.user_id = users.id
+        WHERE images.is_public = TRUE AND images.is_blocked = TRUE
+        ORDER BY images.created_at DESC
+    """)
+    results = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return {"images": results}
 
 @router.get("/{image_id}")
 def get_image_by_id(image_id: int, user=Depends(get_current_user)):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("""
-                    SELECT i.id, i.name, i.url, i.updated_at, u.name AS user_name
+                    SELECT i.id, i.name, i.url, i.updated_at, i.is_blocked, u.name AS user_name
                     FROM images i
                     JOIN users u ON i.user_id = u.id
                     WHERE i.id = %s""", (image_id,))

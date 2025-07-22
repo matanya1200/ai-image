@@ -18,6 +18,7 @@ import AlbumDetails from "./pages/albums/AlbumDetails";
 import MyAlbums from "./pages/albums/MyAlbums";
 import EditAlbum from "./pages/albums/EditAlbum";
 import CreateAlbum from "./pages/albums/CreateAlbum";
+import BlockedImagesAdmin from "./pages/images/BlockedImagesAdmin";
 
 
 function App() {
@@ -69,6 +70,7 @@ function App() {
               <>
                 <Route path="/admin/users" element={<AdminUsers />} />
                 <Route path="/admin/comments" element={<AdminComments />} />
+                <Route path="/admin/blocked-images" element={<BlockedImagesAdmin />} />
               </>
             )}
             <Route path="/profile" element={<MyProfile />} />

@@ -76,6 +76,10 @@ function NavbarUser({ role, onLogout }) {
                     <i className="bi bi-chat-dots-fill me-1"></i>
                     ניהול תגובות
                   </Link></li>
+                  <li><Link className="dropdown-item" to="/admin/blocked-images">
+                    <i className="bi bi-chat-dots-fill me-1"></i>
+                    ניהול תמונות חסומות
+                  </Link></li>
                 </ul>
               </div>
             )}

@@ -1,12 +1,49 @@
-server : 
-cd ai-image
-.\venv\Scripts\Activate  
+# AI-IMAGE – מערכת לשיתוף תמונות עם תמיכה ב-AI
+
+מערכת הכוללת שרת FastAPI, אפליקציית רשת ב-React + Vite, ואפליקציית מובייל מבוססת Expo/React Native.
+
+## תוכן
+- [התקנה והרצה](#התקנה-והרצה)
+- [תיקיות עיקריות](#תיקיות-עיקריות)
+- [מבנה בסיסי](#מבנה-בסיסי)
+- [מסמך אפיון](#מסמך-אפיון)
+
+## התקנה והרצה
+
+### 🔌 שרת (FastAPI)
+```bash
 cd server
-uvicorn main:app --reload
-http://localhost:8000/docs#/  -  suagger של השרת
+pip install -r requirements.txt
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
 
-net app :
-cd C:\Users\matan\OneDrive\Desktop\projects\ai-image\net-app
+### 🌐 אפליקציית רשת (Vite + React)
+```bash
+cd net-app
+npm install
 npm run dev
+```
 
-mobile app:
+### 📱 אפליקציית מובייל (Expo)
+```bash
+cd MobileApp
+npm install
+npx expo start
+```
+
+## תיקיות עיקריות
+
+- `server/` – שרת FastAPI, כולל טבלאות, תמונות, ו-API.
+- `net-app/` – אפליקציית רשת מלאה עם ניווט, API ועמודים רספונסיביים.
+- `MobileApp/` – אפליקציית מובייל Expo עם ממשק Native ותמיכה מלאה במשתמשים/מנהל.
+- `create-tables.sql` – סקריפט SQL ליצירת הטבלאות במסד הנתונים.
+
+## מסמך אפיון
+
+אפליקציה לשיתוף תמונות.docx
+
+המערכת פותחה לפי מסמך אפיון מפורט שכולל:
+- תיאור בסיס הנתונים
+- מסלולי API בשרת
+- הגדרת מסכים וניווט באתר ובמובייל
+- הרשאות לפי תפקיד משתמש (משתמש/מנהל/אורח)

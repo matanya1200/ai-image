@@ -165,6 +165,12 @@ function MyImages() {
                                     </option>
                                   ))}
                                 </select>
+                                {(img.is_blocked == 1) &&(
+                                  <div className="alert alert-warning">
+                                    <i className="bi bi-exclamation-triangle me-2"></i>
+                                    התמונה הזו חסומה
+                                  </div>
+                                )}
                               </div>
                             </div>
                           )}

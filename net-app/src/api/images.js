@@ -51,3 +51,7 @@ export const searchImagesByName = (query, page = 1, limit = 25) =>
 // 13. קבלת דירוג ממוצע לתמונה
 export const getImageRating = (imageId) =>
   api.get(`/images/${imageId}/rating`);
+
+// 14. קבלת כל התמונות הפומביות החסומות עבור מנהל 
+export const getBlockedPublicImages = () =>
+  api.get(`/images/blocked`);
