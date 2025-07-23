@@ -1,28 +1,17 @@
-import { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  ScrollView,
-  Pressable,
-  StyleSheet,
-} from "react-native";
-import {
-  getPublicAlbums,
-  searchPublicAlbumsByName,
-  blockAlbum,
-} from "@/api/albums";
+import { useState } from "react";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { getPublicAlbums, searchPublicAlbumsByName, blockAlbum } from "@/api/albums";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import { AlbumCard } from "@/components/AlbumCard";
+import { SearchBar } from "@/components/SearchBar";
+import { PageHeader } from "@/components/PageHeader";
 
 export default function PublicAlbumsScreen() {
   const [albums, setAlbums] = useState<any[]>([]);
   const [query, setQuery] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
-  const router = useRouter();
 
   useFocusEffect(
     useCallback(() => {
@@ -53,62 +42,35 @@ export default function PublicAlbumsScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>📂 אלבומים פומביים</Text>
+      <PageHeader title="אלבומים פומביים" emoji="📂"/>
 
-      <TextInput
-        placeholder="חפש אלבום לפי שם"
-        value={query}
-        onChangeText={setQuery}
-        style={styles.input}
-      />
-      <Button title="🔍 חפש" onPress={handleSearch} />
+      <SearchBar
+          query={query}
+          onQueryChange={setQuery}
+          onSearch={handleSearch}
+          placeholder = "חיפוש לפי שם תמונה"
+        />
 
       <View style={styles.albumList}>
         {albums.map((album) => (
-          <View key={album.id} style={styles.albumBox}>
-            <Pressable onPress={() => router.push(`/albums/${album.id}`)}>
-                <Text style={styles.albumName}>📁 {album.name}</Text>
-                <Text style={styles.albumUser}>👤 {album.creator_name}</Text>
-            </Pressable>
-            {isAdmin && (
-              <Button
-                title={album.is_blocked ? "שחרור" : "חסימה"}
-                color={album.is_blocked ? "green" : "red"}
-                onPress={() => handleBlock(album.id, album.is_blocked)}
-              />
-            )}
-          </View>
+          <AlbumCard
+            key={album.id}
+            from="albums"
+            id={album.id}
+            name={album.name}
+            creator_name={album.creator_name}
+            isAdmin={isAdmin}
+            is_blocked={album.is_blocked}
+            handleBlock={handleBlock}
+            handleDelete={() => {}}
+          />
         ))}
       </View>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: { padding: 20 },
-  title: { fontSize: 20, fontWeight: "bold", marginBottom: 10 },
-  input: {
-    borderWidth: 1,
-    borderColor: "#aaa",
-    borderRadius: 8,
-    padding: 8,
-    marginBottom: 10,
-  },
-  albumList: {
-    gap: 15,
-    marginTop: 10,
-  },
-  albumBox: {
-    backgroundColor: "#f0f0f0",
-    borderRadius: 8,
-    padding: 12,
-  },
-  albumName: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  albumUser: {
-    fontSize: 12,
-    color: "#666",
-  },
+  albumList: { gap: 15, marginTop: 10 }
 });

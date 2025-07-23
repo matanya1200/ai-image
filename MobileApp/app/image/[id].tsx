@@ -15,6 +15,10 @@ import {
   deleteComment,
 } from "@/api/commits";
 import { getMyProfile } from "@/api/users";
+import { ImageCard } from "@/components/ImageCard";
+import { CommentCard } from "@/components/CommentCard";
+import { Pagination } from "@/components/pagination";
+import { PrimaryButton } from "@/components/Button";
 
 export default function ImageDetailsScreen() {
   const { id } = useLocalSearchParams();
@@ -25,6 +29,13 @@ export default function ImageDetailsScreen() {
   const [rating, setRating] = useState<number | null>(null);
   const [myId, setMyId] = useState<number | null>(null);
   const [isBlocked, setIsBlocked] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    total_pages: 1,
+    total_items: 0,
+    items_per_page: 25,
+  });
 
   useEffect(() => {
     fetchAll();
@@ -39,6 +50,7 @@ export default function ImageDetailsScreen() {
 
     const commentRes = await getCommentsByImage(imageId);
     setComments(commentRes.data.commits);
+    setPagination(commentRes.data.pagination || {});
 
     const profile = await getMyProfile();
     setMyId(profile.data.id);
@@ -58,57 +70,75 @@ export default function ImageDetailsScreen() {
     ]);
   };
 
+  const nextPage = () => {
+    if (page < pagination.total_pages) setPage(page + 1);
+  };
+
+  const prevPage = () => {
+    if (page > 1) setPage(page - 1);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {image && (
         <>
-          <Text style={styles.title}>{image.name}</Text>
-          <Image source={{ uri: image.url }} style={styles.image} />
-          <Text>מאת: {image.user_name}</Text>
-          <Text>
-            דירוג ממוצע: {rating ? `${rating.toFixed(1)} ⭐` : "אין דירוג"}
-          </Text>
+          <ImageCard
+            from="imageDetails"
+            id={image.id}
+            url={image.url}
+            name={image.name}
+            user_name={image.user_name}
+            is_blocked={image.is_blocked}
+            is_public={image.is_public}
+            album_id={image.album_id}
+            isAdmin={false}
+            rating={rating}
+          />
+
           {!isBlocked && (
-            <Button
+            <PrimaryButton
               title="💬 הוסף תגובה"
               onPress={() => router.push(`/comment/add/${imageId}`)}
             />
           )}
+
           {(image.is_blocked == 1) && (
             <Text>התמונה הזו חסומה</Text>
           )}
+
           <Text style={styles.commentHeader}>תגובות:</Text>
+
           {Array.isArray(comments) && comments.length === 0 && <Text>אין תגובות לתמונה זו.</Text>}
           
           {Array.isArray(comments) &&
             comments.map((c) => (
                 <View key={c.id} style={styles.commentBox}>
-                <Text>
-                    <Text style={styles.bold}>{c.user_name}:</Text> {c.comment}
-                </Text>
-                <Text>⭐ {c.rating}</Text>
-                {c.user_id === myId && !isBlocked && (
-                    <View style={styles.buttonRow}>
-                    <Button
-                        title="✏️ עריכה"
-                        onPress={() => router.push(`/comment/edit/${c.id}`)}
-                    />
-                    <Button
-                        title="🗑️ מחיקה"
-                        color="red"
-                        onPress={() => handleDelete(c.id)}
-                    />
-                    </View>
-                )}
+                  <CommentCard
+                    from="imageId"
+                    id={c.id}
+                    comment_user_id={c.user_id}
+                    user_id={myId ?? undefined}
+                    user_name={c.user_name}
+                    comment={c.comment}
+                    rating={c.rating}
+                    user_blocked={isBlocked}
+                    handleDelete={handleDelete}
+                  />
                 </View>
             ))}
+            <Pagination
+              currentPage={pagination.current_page}
+              totalPages={pagination.total_pages}
+              onNext={nextPage}
+              onPrev={prevPage}
+            />  
         </>
       )}
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: { padding: 20 },
   title: { fontSize: 20, fontWeight: "bold", marginBottom: 10 },
   image: { width: "100%", height: 200, marginBottom: 10 },

@@ -1,19 +1,10 @@
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  Alert,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Alert, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { logout } from "@/api/auth"
-import {
-  getMyProfile,
-  updateMyName,
-  deleteMyUser,
-} from "@/api/users";
+import { getMyProfile, updateMyName, deleteMyUser } from "@/api/users";
+import { UserCard } from "@/components/UserCard"
+import { PageHeader } from "@/components/PageHeader"
 
 export default function ProfileScreen() {
   const [profile, setProfile] = useState<any>(null);
@@ -87,45 +78,21 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>👤 פרופיל משתמש</Text>
-      <Text>שם נוכחי: {profile.name}</Text>
-      <Text>אימייל: {profile.email}</Text>
-      <Text>תפקיד: {profile.role}</Text>
-      <Text style={{ color: isBlocked ? "red" : "green" }}>
-        {isBlocked ? "⚠️ המשתמש חסום" : "✅ המשתמש פעיל"}
-      </Text>
-
-      <Text style={{ marginTop: 20 }}>שם חדש:</Text>
-      <TextInput
-        value={newName}
-        onChangeText={setNewName}
-        style={styles.input}
-        editable={!isBlocked}
+      <PageHeader title="הפרטים שלי"/>
+      <UserCard
+        from="user"
+        name={profile.name}
+        email={profile.email}
+        role={profile.role}
+        is_blocked={isBlocked}
+        is_admin={profile.role === "admin"}
+        newName={newName}
+        handleToggleBlock={() => {}}
+        setNewName={setNewName}
+        handleUpdateName={handleUpdateName}
+        handleDelete={handleDelete}
+        logout={logout}
       />
-
-      <Button
-        title="עדכן שם"
-        onPress={handleUpdateName}
-        disabled={isBlocked}
-      />
-
-      <View style={{ marginTop: 20 }}>
-        <Button
-          title="🗑️ מחיקת משתמש"
-          color="red"
-          onPress={handleDelete}
-          disabled={isBlocked}
-        />
-      </View>
-
-      <View style={{ marginTop: 20 }}>
-        <Button
-          title="התנתקות"
-          color="red"
-          onPress={logout}
-          disabled={isBlocked}
-        />
-      </View>
     </View>
   );
 }
@@ -133,17 +100,6 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-  },
-  title: {
-    fontSize: 22,
-    marginBottom: 20,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    marginVertical: 10,
-    borderRadius: 6,
   },
   center: {
     flex: 1,

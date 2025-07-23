@@ -1,4 +1,4 @@
-import { Tabs, useRouter } from "expo-router";
+import { Tabs } from "expo-router";
 import { useEffect, useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import React from "react";
@@ -6,12 +6,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function AuthenticatedLayout() {
   const [isAdmin, setIsAdmin] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     const checkAuth = async () => {
       const role = await AsyncStorage.getItem("role");
-      console.log("Role from AsyncStorage:", role); // לבדיקה
+      console.log("Role from AsyncStorage:", role);
       setIsAdmin(role === "admin");
     }
     checkAuth();

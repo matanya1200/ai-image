@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { View, Text, TextInput, Button, Image, ScrollView, StyleSheet } from "react-native";
 import { getPublicImages, searchImagesByName } from "@/api/images";
+import { ImageCard } from "@/components/ImageCard";
+import { Pagination } from "@/components/pagination";
+import { SearchBar } from "@/components/SearchBar";
+import { PageHeader } from "@/components/PageHeader";
 
 export default function PublicImagesScreen() {
   const [images, setImages] = useState<any[]>([]);
@@ -45,52 +49,42 @@ export default function PublicImagesScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>🖼️ תמונות פומביות</Text>
+      <PageHeader title="תמונות פומביות" emoji="🖼️" />
 
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="חיפוש לפי שם"
-          value={query}
-          onChangeText={setQuery}
+      <SearchBar
+          query={query}
+          onQueryChange={setQuery}
+          onSearch={handleSearch}
+          placeholder = "חיפוש לפי שם תמונה"
         />
-        <Button title="🔍 חפש" onPress={handleSearch} />
+      
+      <View style={styles.grid}>
+        {images.map((img) => (
+          <ImageCard key = {img.id}
+              from="guestIndex"
+              id={img.id}
+              url={img.url}
+              name={img.name}
+              user_name={img.user_name}
+              is_blocked={img.is_blocked}
+              is_public={img.is_public}
+              album_id={img.album_id}
+              isAdmin={false}
+            />
+        ))}
       </View>
 
-      {images.map((img) => (
-        <View key={img.id} style={styles.imageCard}>
-          <Image source={{ uri: img.url }} style={styles.image} />
-          <Text style={styles.imageName}>{img.name}</Text>
-          <Text style={styles.author}>🧑‍🎨 {img.user_name}</Text>
-        </View>
-      ))}
-
-      <View style={styles.pagination}>
-        <Button title="◀️ קודם" onPress={prevPage} disabled={page <= 1} />
-        <Text style={styles.pageText}>
-          עמוד {pagination.current_page} מתוך {pagination.total_pages}
-        </Text>
-        <Button title="▶️ הבא" onPress={nextPage} disabled={page >= pagination.total_pages} />
-      </View>
+      <Pagination
+          currentPage={pagination.current_page}
+          totalPages={pagination.total_pages}
+          onNext={nextPage}
+          onPrev={prevPage}
+        />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { padding: 20, alignItems: "center" },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 15 },
-  searchContainer: { flexDirection: "row", marginBottom: 15, gap: 10 },
-  input: {
-    borderWidth: 1, borderColor: "#ccc", borderRadius: 5,
-    padding: 8, flex: 1, minWidth: 200
-  },
-  imageCard: {
-    marginBottom: 20, alignItems: "center",
-    borderWidth: 1, borderColor: "#eee", padding: 10, borderRadius: 8
-  },
-  image: { width: 200, height: 200, borderRadius: 10 },
-  imageName: { fontWeight: "bold", marginTop: 5 },
-  author: { fontStyle: "italic", color: "#555" },
-  pagination: { flexDirection: "row", alignItems: "center", marginTop: 20, gap: 20 },
-  pageText: { fontSize: 16 },
+  grid: { flexDirection: "row", flexWrap: "wrap", gap: 10, justifyContent: "center" },
 });

@@ -1,22 +1,14 @@
-import {
-  View,
-  Text,
-  TextInput,
-  Switch,
-  Button,
-  Image,
-  Pressable,
-  Alert,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
-import { useEffect, useState } from "react";
+import { View, Text, TextInput, Switch, Button, Alert, ScrollView, StyleSheet } from "react-native";
+import { useState } from "react";
 import { useRouter } from "expo-router";
 import { getMyProfile } from "@/api/users";
 import { getMyImages, assignImageToAlbum } from "@/api/images";
 import { createNewAlbum } from "@/api/albums";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import { LogButton, PrimaryButton, CancelButton } from "@/components/Button"
+import { PageHeader } from "@/components/PageHeader"
+import { ImageCard } from "@/components/ImageCard";
 
 export default function CreateAlbumScreen() {
   const [name, setName] = useState("");
@@ -86,7 +78,8 @@ export default function CreateAlbumScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       {!albumId ? (
         <>
-          <Text style={styles.title}>📁 יצירת אלבום חדש</Text>
+          <PageHeader title="יצירת אלבום חדש" emoji="📁"/>
+          
           <TextInput
             placeholder="שם האלבום"
             value={name}
@@ -97,30 +90,33 @@ export default function CreateAlbumScreen() {
             <Text>פומבי</Text>
             <Switch value={isPublic} onValueChange={setIsPublic} />
           </View>
-          <Button title="צור אלבום" onPress={handleCreateAlbum} />
-          <View style={{ marginTop: 10 }}>
-            <Button title="חזרה" onPress={() => router.back()} />
-          </View>
+          <PrimaryButton title="צור אלבום" onPress={handleCreateAlbum} />
+          <View style={{ height: 10 }} />
+          <CancelButton title="חזרה" onPress={() => router.back()} />
         </>
       ) : (
         <>
-          <Text style={styles.title}>הוספת תמונות לאלבום</Text>
-          {images.map((img) => (
-            <View key={img.id} style={styles.imageCard}>
-              <Image source={{ uri: img.url }} style={styles.image} />
-              <Pressable
-                style={styles.addButton}
-                onPress={() => handleAssign(img.id)}
-              >
-                <Text style={{ color: "white" }}>➕ הוסף</Text>
-              </Pressable>
-            </View>
-          ))}
+          <PageHeader title="הוספת תמונות לאלבום"/>
+          <View style={styles.grid}>
+            {images.map((img) => (
+              <ImageCard key = {img.id}
+              from="add-images-to-album"
+              id={img.id}
+              url={img.url}
+              name={img.name}
+              user_name={img.user_name}
+              is_blocked={img.is_blocked}
+              is_public={img.is_public}
+              album_id={img.album_id}
+              isAdmin={false}
+              handleAssign={handleAssign}
+            />
+            ))}
+          </View>
           <View style={{ marginTop: 20 }}>
-            <Button
+            <LogButton
               title="סיום"
               onPress={() => handlefinish()}
-              color="green"
             />
           </View>
         </>
@@ -134,14 +130,11 @@ const styles = StyleSheet.create({
     padding: 15,
     alignItems: "center",
   },
+  grid: { flexDirection: "row", flexWrap: "wrap", gap: 10, justifyContent: "center" },
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  title: {
-    fontSize: 22,
-    marginBottom: 15,
   },
   input: {
     borderWidth: 1,
@@ -156,21 +149,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     marginBottom: 20,
-  },
-  imageCard: {
-    marginBottom: 10,
-    alignItems: "center",
-  },
-  image: {
-    width: 200,
-    height: 150,
-    borderRadius: 8,
-  },
-  addButton: {
-    marginTop: 5,
-    backgroundColor: "blue",
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 5,
-  },
+  }
 });

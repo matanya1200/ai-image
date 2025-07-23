@@ -1,22 +1,11 @@
 import { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  Image,
-  Alert,
-  ActivityIndicator,
-  ScrollView,
-} from "react-native";
+import { View, Text, TextInput, Button, Image, Alert, ActivityIndicator, ScrollView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import {
-  uploadImageFile,
-  addImageByUrl,
-  generateImageWithAI,
-} from "@/api/images";
+import { uploadImageFile, addImageByUrl, generateImageWithAI } from "@/api/images";
 import { getMyProfile } from "@/api/users";
 import { useRouter } from "expo-router";
+import { PrimaryButton } from "@/components/Button"
+import { PageHeader } from "@/components/PageHeader"
 
 export default function AddImageScreen() {
   const [name, setName] = useState("");
@@ -139,9 +128,7 @@ export default function AddImageScreen() {
 
   return (
     <ScrollView contentContainerStyle={{ padding: 20 }}>
-      <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
-        🖼️ הוספת תמונה חדשה
-      </Text>
+      <PageHeader title="הוספת תמונה" emoji="🖼️"/> 
 
       <TextInput
         placeholder="שם התמונה"
@@ -156,9 +143,9 @@ export default function AddImageScreen() {
       />
 
       {/* העלאה מקובץ */}
-      <Button title="בחר קובץ תמונה" onPress={handlePickImage} />
+      <PrimaryButton title="בחר קובץ תמונה" onPress={handlePickImage} />
       <View style={{ height: 10 }} />
-      <Button title="העלה קובץ" onPress={handleUploadFile} />
+      <PrimaryButton title="העלה קובץ" onPress={handleUploadFile} />
 
       <Text style={{ marginVertical: 10, fontWeight: "bold" }}>או:</Text>
 
@@ -174,7 +161,7 @@ export default function AddImageScreen() {
           borderRadius: 5,
         }}
       />
-      <Button title="הוסף מקישור" onPress={handleAddFromUrl} />
+      <PrimaryButton title="הוסף מקישור" onPress={handleAddFromUrl} />
 
       <Text style={{ marginVertical: 10, fontWeight: "bold" }}>או:</Text>
 
@@ -190,11 +177,11 @@ export default function AddImageScreen() {
           borderRadius: 5,
         }}
       />
-      <Button title="צור תמונה עם AI" onPress={handleGenerateAI} />
+      <PrimaryButton title="צור תמונה עם AI" onPress={handleGenerateAI} />
 
       {loading && <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 20 }} />}
 
-      {previewImage && (
+      {previewImage !== "" && (
         <Image
           source={{ uri: previewImage }}
           style={{ width: "100%", height: 300, marginTop: 20 }}

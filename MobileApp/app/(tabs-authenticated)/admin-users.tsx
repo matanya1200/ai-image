@@ -3,6 +3,8 @@ import { View, Text, Button, FlatList, Alert, StyleSheet } from "react-native";
 import { getAllUsers, blockUser } from "@/api/users";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import { UserCard } from "@/components/UserCard"
+import { PageHeader } from "@/components/PageHeader"
 
 export default function AdminUsersScreen() {
   const [users, setUsers] = useState<any[]>([]);
@@ -36,28 +38,25 @@ export default function AdminUsersScreen() {
   };
 
   const renderUser = ({ item }: { item: any }) => (
-    <View style={styles.userCard}>
-      <Text style={styles.email}>{item.email}</Text>
-      <Text>שם: {item.name}</Text>
-      <Text>תפקיד: {item.role}</Text>
-      <Text
-        style={{
-          color: item.is_blocked ? "red" : "green",
-        }}
-      >
-        {item.is_blocked ? "חסום ❌" : "פעיל ✅"}
-      </Text>
-      <Button
-        title={item.is_blocked ? "שחרר משתמש" : "חסום משתמש"}
-        color={item.is_blocked ? "green" : "red"}
-        onPress={() => handleToggleBlock(item.email, item.is_blocked)}
-      />
-    </View>
+    <UserCard
+      from="admin"
+      name={item.name}
+      email={item.email}
+      role={item.role}
+      is_blocked={item.is_blocked}
+      is_admin={item.role === "admin"}
+      newName={""} // לא רלוונטי לאדמין
+      setNewName={() => {}} // לא רלוונטי לאדמין
+      handleUpdateName={() => {}} // לא רלוונטי לאדמין
+      handleDelete={() => {}} // לא רלוונטי לאדמין
+      logout={() => {}} // לא רלוונטי לאדמין
+      handleToggleBlock={handleToggleBlock}
+    />
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🛡️ ניהול משתמשים</Text>
+      <PageHeader title="ניהול משתמשים" emoji="🛡️"/>
       {loading ? (
         <Text>טוען משתמשים...</Text>
       ) : (
@@ -75,20 +74,5 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     flex: 1,
-  },
-  title: {
-    fontSize: 22,
-    marginBottom: 20,
-  },
-  userCard: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    padding: 12,
-    marginVertical: 8,
-    borderRadius: 6,
-    backgroundColor: "#f9f9f9",
-  },
-  email: {
-    fontWeight: "bold",
   },
 });

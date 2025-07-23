@@ -1,20 +1,13 @@
-import { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Button,
-  ScrollView,
-  Alert,
-  TouchableOpacity,
-} from "react-native";
+import { useState } from "react";
+import { View, Text, ScrollView, Alert } from "react-native";
 import { useRouter } from "expo-router";
-import {
-  getMyAlbums,
-  deleteAlbum,
-} from "@/api/albums";
+import { getMyAlbums, deleteAlbum } from "@/api/albums";
 import { getMyProfile } from "@/api/users";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import { AlbumCard } from "@/components/AlbumCard"
+import { PrimaryButton } from "@/components/Button"
+import { PageHeader } from "@/components/PageHeader"
 
 export default function MyAlbumsScreen() {
   const [albums, setAlbums] = useState<any[]>([]);
@@ -62,43 +55,27 @@ export default function MyAlbumsScreen() {
 
   return (
     <ScrollView contentContainerStyle={{ padding: 16 }}>
-      <Text style={{ fontSize: 22, marginBottom: 10 }}>📁 האלבומים שלי</Text>
+      <PageHeader title="האלבומים שלי" emoji="📁"/>
 
       {albums.map((album) => (
-        <View
+        <AlbumCard
           key={album.id}
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            borderRadius: 8,
-            padding: 12,
-            marginBottom: 12,
-          }}
-        >
-          <TouchableOpacity onPress={() => router.push(`/albums/${album.id}`)}>
-            <Text style={{ fontSize: 18 }}>{album.name}</Text>
-          </TouchableOpacity>
-          <Text>סטטוס: {album.is_public ? "פומבי" : "פרטי"}</Text>
-
-          {!isBlocked && (
-          <View style={{ flexDirection: "row", gap: 10, marginTop: 8 }}>
-            <Button
-              title="ערוך"
-              onPress={() => router.push(`/albums/edit/${album.id}`)}
-            />
-            <Button
-              title="מחק"
-              color="red"
-              onPress={() => handleDelete(album.id)}
-            />
-          </View>)}
-          {(album.is_blocked == 1) && (<Text>האלבום הזה חסום</Text>)}
-        </View>
+          from="my-albums"
+          id={album.id}
+          name={album.name}
+          creator_name=""
+          isAdmin={false}
+          is_blocked={album.is_blocked}
+          is_public={album.is_public}
+          userBlocked={isBlocked}
+          handleBlock={() => {}}
+          handleDelete={handleDelete}
+        />
       ))}
 
       {!isBlocked && (
         <View style={{ marginTop: 16 }}>
-          <Button
+          <PrimaryButton
             title="📁 צור אלבום חדש"
             onPress={() => router.push("/create-album")}
           />

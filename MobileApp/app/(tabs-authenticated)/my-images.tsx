@@ -1,29 +1,13 @@
-import {
-  View,
-  Text,
-  Image,
-  FlatList,
-  Button,
-  Alert,
-  TextInput,
-  Modal,
-  Pressable,
-  StyleSheet,
-} from "react-native";
-import { useEffect, useState } from "react";
-import {
-  getMyImages,
-  renameImage,
-  updateImagePublicStatus,
-  deleteImage,
-  assignImageToAlbum,
-} from "@/api/images";
+import { View, Text, FlatList, Button, Alert, TextInput, Modal, StyleSheet } from "react-native";
+import { useState } from "react";
+import { getMyImages, renameImage, updateImagePublicStatus, deleteImage, assignImageToAlbum } from "@/api/images";
 import { getMyAlbums } from "@/api/albums";
 import { getMyProfile } from "@/api/users";
-import { useRouter } from "expo-router";
-import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import { ImageCard } from "@/components/ImageCard";
+import { Pagination } from "@/components/pagination";
+import { PageHeader } from "@/components/PageHeader";
 
 export default function MyImagesScreen() {
   const [images, setImages] = useState<any[]>([]);
@@ -33,7 +17,12 @@ export default function MyImagesScreen() {
   const [renameValue, setRenameValue] = useState("");
   const [renameId, setRenameId] = useState<number|null>(null);
   const [page, setPage] = useState(1);
-  const router = useRouter();
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    total_pages: 1,
+    total_items: 0,
+    items_per_page: 25,
+  });
 
   useFocusEffect(
     useCallback(() => {
@@ -47,6 +36,7 @@ export default function MyImagesScreen() {
       setBlocked(profile.data.is_blocked);
       const imagesRes = await getMyImages(page);
       setImages(imagesRes.data.images);
+      setPagination(imagesRes.data.pagination || {});
       const albumsRes = await getMyAlbums();
       setAlbums(albumsRes.data);
     } catch (error) {
@@ -96,62 +86,54 @@ export default function MyImagesScreen() {
     loadData();
   };
 
+  const nextPage = () => {
+    if (page < pagination.total_pages) setPage(page + 1);
+  };
+
+  const prevPage = () => {
+    if (page > 1) setPage(page - 1);
+  };
+
   const renderImage = ({ item }: any) => (
     <View style={styles.card}>
-      <Pressable onPress={() => router.push(`/image/${item.id}`)}>
-        <Image source={{ uri: item.url }} style={styles.image} />
-      </Pressable>
-      <Text style={styles.name}>{item.name}</Text>
-
-      {(item.is_blocked == 1) && (
-        <Text style={{ color: "red", fontSize: 12 }}>התמונה חסומה</Text>
-      )}
-
-      {!blocked && (
-        <>
-          <Button title="📝 שינוי שם" onPress={() => handleRename(item.id)} />
-          <Button
-            title={item.is_public ? "הפוך לפרטי" : "הפוך לפומבי"}
-            onPress={() => handleTogglePublic(item.id, item.is_public)}
-          />
-          <Button
-            title="🗑️ מחק"
-            color="red"
-            onPress={() => handleDelete(item.id)}
-          />
-
-          <Text style={{ marginTop: 5 }}>שיוך לאלבום:</Text>
-          <Picker
-            selectedValue={item.album_id || "none"}
-            onValueChange={(val) => handleAssignAlbum(item.id, val)}
-            style={{ width: "100%", height: 40 }}
-          >
-            <Picker.Item label="כללי (ללא אלבום)" value="none" />
-            {albums.map((album) => (
-              <Picker.Item
-                key={album.id}
-                label={album.name}
-                value={album.id}
-              />
-            ))}
-          </Picker>
-        </>
-      )}
+      <ImageCard
+        from="myImages"
+        id={item.id}
+        url={item.url}
+        name={item.name}
+        user_name={item.user_name}
+        is_blocked={item.is_blocked}
+        is_public={item.is_public}
+        album_id={item.album_id}
+        isAdmin={false}
+        userBlocked={!blocked}
+        albums={albums}
+        handleRename={handleRename}
+        handleDelete={handleDelete}
+        handleTogglePublic={handleTogglePublic}
+        handleAssignAlbum={handleAssignAlbum}
+      />
     </View>
   );
 
   return (
     <View style={{ flex: 1, padding: 10 }}>
-      <Text style={{ fontSize: 22, marginBottom: 10 }}>🖼️ התמונות שלי</Text>
+      <PageHeader title="התמונות שלי " emoji="🖼️"/>
 
       <FlatList
         data={images}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderImage}
-        numColumns={2}
+        numColumns={1}
         contentContainerStyle={{ gap: 10 }}
-        columnWrapperStyle={{ gap: 10 }}
       />
+
+      <Pagination
+          currentPage={pagination.current_page}
+          totalPages={pagination.total_pages}
+          onNext={nextPage}
+          onPrev={prevPage}
+        /> 
 
       {/* Rename modal */}
       <Modal visible={renameModalVisible} transparent animationType="slide">
@@ -176,6 +158,7 @@ export default function MyImagesScreen() {
 
 const styles = StyleSheet.create({
   card: {
+    width: "100%",
     flex: 1,
     padding: 8,
     borderWidth: 1,
@@ -184,7 +167,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 120,
+    height: 100,
     borderRadius: 6,
     marginBottom: 5,
   },

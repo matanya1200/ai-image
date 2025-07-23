@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { View, Text, TextInput, Button, Alert } from "react-native";
+import { View, Text, TextInput, Alert } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { addComment } from "@/api/commits";
+import { PrimaryButton, CancelButton } from "@/components/Button"
 
 export default function AddCommentScreen() {
   const { id } = useLocalSearchParams(); // imageId
@@ -58,8 +59,8 @@ export default function AddCommentScreen() {
       />
 
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Button title="🚫 ביטול" onPress={handleCancel} color="gray" />
-        <Button title="💬 הוסף תגובה" onPress={handleSubmit} />
+        <CancelButton title="🚫 ביטול" onPress={handleCancel} />
+        <PrimaryButton title="💬 הוסף תגובה" onPress={handleSubmit} />
       </View>
     </View>
   );

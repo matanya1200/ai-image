@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { View, Text, TextInput, Button, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { getCommentByID, updateComment } from "@/api/commits";
+import { PrimaryButton, CancelButton } from "@/components/Button"
 
 export default function EditCommentScreen() {
   const { id } = useLocalSearchParams(); // commentId
@@ -72,8 +73,8 @@ export default function EditCommentScreen() {
       />
 
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Button title="ביטול" onPress={() => router.replace(`/image/${imageId}`)} color="gray" />
-        <Button title="עדכן" onPress={handleUpdate} />
+        <CancelButton title="ביטול" onPress={() => router.replace(`/image/${imageId}`)} />
+        <PrimaryButton title="עדכן" onPress={handleUpdate} />
       </View>
     </View>
   );

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { View, Text, TextInput, Button, Pressable, StyleSheet, ScrollView } from "react-native";
+import { Text, StyleSheet, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { getPublicAlbums, searchPublicAlbumsByName } from "@/api/albums";
+import { AlbumCard } from "@/components/AlbumCard";
+import { SearchBar } from "@/components/SearchBar";
+import { PageHeader } from "@/components/PageHeader";
 
 export default function PublicAlbumsScreen() {
   const [albums, setAlbums] = useState<any[]>([]);
@@ -32,27 +35,27 @@ export default function PublicAlbumsScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>📚 אלבומים פומביים</Text>
+      <PageHeader title="אלבומים פומביים" emoji="📚" />
 
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="חפש לפי שם אלבום"
-          value={query}
-          onChangeText={setQuery}
+      <SearchBar
+          query={query}
+          onQueryChange={setQuery}
+          onSearch={handleSearch}
+          placeholder = "חיפוש לפי שם תמונה"
         />
-        <Button title="🔍 חפש" onPress={handleSearch} />
-      </View>
 
       {albums.map((album) => (
-        <Pressable
-          key={album.id}
-          style={styles.albumCard}
-          onPress={() => router.push(`/albums/${album.id}`)}
-        >
-          <Text style={styles.albumName}>📁 {album.name}</Text>
-          <Text style={styles.albumOwner}>👤 {album.creator_name}</Text>
-        </Pressable>
+        <AlbumCard
+            key={album.id}
+            from="albums"
+            id={album.id}
+            name={album.name}
+            creator_name={album.creator_name}
+            isAdmin={false}
+            is_blocked={album.is_blocked}
+            handleBlock={() => {}}
+            handleDelete={() => {}}
+          />
       ))}
     </ScrollView>
   );
@@ -60,22 +63,4 @@ export default function PublicAlbumsScreen() {
 
 const styles = StyleSheet.create({
   container: { padding: 20, alignItems: "center" },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 15 },
-  searchContainer: { flexDirection: "row", marginBottom: 15, gap: 10 },
-  input: {
-    borderWidth: 1, borderColor: "#ccc", borderRadius: 5,
-    padding: 8, flex: 1, minWidth: 200
-  },
-  albumCard: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 15,
-    width: "100%",
-    backgroundColor: "#fafafa"
-  },
-  albumName: { fontSize: 16, fontWeight: "bold" },
-  albumOwner: { fontSize: 14, color: "#555" },
-  pagination: { flexDirection: "row", gap: 20, alignItems: "center", marginTop: 20 },
 });

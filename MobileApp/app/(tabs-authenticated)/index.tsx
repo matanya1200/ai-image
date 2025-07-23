@@ -1,23 +1,13 @@
-import { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TextInput,
-  Button,
-  ScrollView,
-  Pressable,
-  StyleSheet,
-} from "react-native";
-import {
-  getPublicImages,
-  searchImagesByName,
-  blockImage,
-} from "@/api/images";
+import { useState } from "react";
+import { View, ScrollView, StyleSheet } from "react-native";
+import { getPublicImages, searchImagesByName, blockImage } from "@/api/images";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import { ImageCard } from "@/components/ImageCard";
+import { Pagination } from "@/components/pagination";
+import { SearchBar } from "@/components/SearchBar";
+import { PageHeader } from "@/components/PageHeader";
 
 export default function HomeScreen() {
   const [images, setImages] = useState<any[]>([]);
@@ -30,7 +20,6 @@ export default function HomeScreen() {
     total_items: 0,
     items_per_page: 25,
   });
-  const router = useRouter();
 
   useFocusEffect(
     useCallback(() => {
@@ -71,80 +60,43 @@ export default function HomeScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>🏠 עמוד הבית - משתמש מחובר</Text>
+      <PageHeader title="עמוד הבית" emoji="🏠"/>
 
-      <TextInput
-        style={styles.input}
-        placeholder="חפש לפי שם"
-        value={query}
-        onChangeText={setQuery}
-      />
-      <Button title="🔍 חפש" onPress={handleSearch} />
+      <SearchBar
+          query={query}
+          onQueryChange={setQuery}
+          onSearch={handleSearch}
+          placeholder = "חיפוש לפי שם תמונה"
+        />
 
       <View style={styles.grid}>
         {images.map((img) => (
-          <View key={img.id} style={styles.imageContainer}>
-            <Pressable onPress={() => router.push(`/image/${img.id}`)}>
-              <Image source={{ uri: img.url }} style={styles.image} />
-              <Text style={styles.caption}>{img.name}</Text>
-              <Text style={styles.user}>by {img.user_name}</Text>
-            </Pressable>
-            {isAdmin && (
-              <Button
-                title={img.is_blocked ? "שחרור" : "חסימה"}
-                color={img.is_blocked ? "green" : "red"}
-                onPress={() => handleBlock(img.id, img.is_blocked)}
-              />
-            )}
-          </View>
+          <ImageCard key = {img.id}
+            from="index"
+            id={img.id}
+            url={img.url}
+            name={img.name}
+            user_name={img.user_name}
+            is_blocked={img.is_blocked}
+            is_public={img.is_public}
+            album_id={img.album_id}
+            isAdmin={isAdmin}
+            handleBlock={handleBlock}
+          />
         ))}
       </View>
 
-      <View style={styles.pagination}>
-        <Button title="◀️ קודם" onPress={prevPage} disabled={page <= 1} />
-          <Text style={styles.pageText}>
-            עמוד {pagination.current_page} מתוך {pagination.total_pages}
-          </Text>
-        <Button title="▶️ הבא" onPress={nextPage} disabled={page >= pagination.total_pages} />
-      </View>    
+      <Pagination
+          currentPage={pagination.current_page}
+          totalPages={pagination.total_pages}
+          onNext={nextPage}
+          onPrev={prevPage}
+        />  
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20 },
-  title: { fontSize: 20, fontWeight: "bold", marginBottom: 10 },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 8,
-    marginBottom: 10,
-  },
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-    justifyContent: "center",
-  },
-  imageContainer: {
-    width: 160,
-    margin: 10,
-    alignItems: "center",
-  },
-  image: {
-    width: 150,
-    height: 150,
-    borderRadius: 10,
-  },
-  caption: {
-    marginTop: 5,
-    fontWeight: "600",
-  },
-  user: {
-    fontSize: 12,
-    color: "#555",
-  },
-  pagination: { flexDirection: "row", alignItems: "center", marginTop: 20, gap: 20 },
-  pageText: { fontSize: 16 },
+  container: { padding: 20, alignItems: "center" },
+  grid: { flexDirection: "row", flexWrap: "wrap", gap: 10, justifyContent: "center" },
 });

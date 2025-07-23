@@ -12,7 +12,7 @@ export default function GuestLayout() {
           borderTopWidth: 1,
           borderTopColor: "#eee",
           paddingBottom: 5,
-          paddingTop: 5,
+          paddingTop: 5, 
         },
         headerStyle: {
           backgroundColor: "#000000ff",

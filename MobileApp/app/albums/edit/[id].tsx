@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  Switch,
-  Alert,
-} from "react-native";
+import { View, Text, TextInput, Switch, Alert } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { getMyAlbums, updateAlbum } from "@/api/albums";
+import { PageHeader } from "@/components/PageHeader"
+import { PrimaryButton, CancelButton } from "@/components/Button"
 
 // Define the Album type to fix TypeScript errors
 interface Album {
@@ -39,9 +34,6 @@ export default function EditAlbumScreen() {
         router.back();
         return;
       }
-
-      console.log(res.data)
-
       setName(album.name);
       setIsPublic(album.is_public);
       setLoading(false);
@@ -71,7 +63,7 @@ export default function EditAlbumScreen() {
 
   return (
     <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 20, marginBottom: 10 }}>עריכת אלבום</Text>
+      <PageHeader title="עריכת אלבום"/>
 
       <Text>שם האלבום:</Text>
       <TextInput
@@ -95,8 +87,8 @@ export default function EditAlbumScreen() {
       </View>
 
       <View style={{ flexDirection: "row", gap: 10 }}>
-        <Button title="ביטול" onPress={() => router.replace("/my-albums")} />
-        <Button title="עדכן" onPress={handleUpdate} />
+        <CancelButton title="ביטול" onPress={() => router.replace("/my-albums")} />
+        <PrimaryButton title="עדכן" onPress={handleUpdate} />
       </View>
 
 

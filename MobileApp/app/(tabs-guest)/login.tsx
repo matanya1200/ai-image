@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
+import { View, TextInput, Alert, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { login } from "@/api/auth";
+import { PageHeader } from "@/components/PageHeader";
+import { LogButton } from "@/components/Button";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -25,7 +27,7 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>התחברות</Text>
+      <PageHeader title="התחברות"/>
 
       <TextInput
         style={styles.input}
@@ -44,13 +46,14 @@ export default function LoginScreen() {
         onChangeText={setPassword}
       />
 
-      <Button title="התחבר" onPress={handleLogin} />
+      <View>
+        <LogButton title="התחבר" onPress={handleLogin} />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20, flex: 1, justifyContent: "center" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
+  container: { padding: 20, justifyContent: "center" },
   input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 5, padding: 10, marginBottom: 15 },
 });

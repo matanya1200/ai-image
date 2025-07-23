@@ -2,6 +2,8 @@ import { useState } from "react";
 import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { register } from "@/api/auth";
+import { PageHeader } from "@/components/PageHeader";
+import { LogButton } from "@/components/Button";
 
 export default function RegisterScreen() {
   const [name, setName] = useState("");
@@ -28,7 +30,7 @@ export default function RegisterScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>הרשמה</Text>
+      <PageHeader title="הרשמה"/>
 
       <TextInput
         style={styles.input}
@@ -54,13 +56,14 @@ export default function RegisterScreen() {
         onChangeText={setPassword}
       />
 
-      <Button title="הירשם" onPress={handleRegister} />
+      <View>
+        <LogButton title="הירשם" onPress={handleRegister} />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20, flex: 1, justifyContent: "center" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
+  container: { padding: 20, justifyContent: "center" },
   input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 5, padding: 10, marginBottom: 15 },
 });

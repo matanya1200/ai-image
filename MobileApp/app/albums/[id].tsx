@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, ScrollView, Pressable } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { useLocalSearchParams } from "expo-router";
 import { getPublicImagesInAlbum, getAllImagesInAlbum } from "@/api/albums";
 import { getMyAlbums } from "@/api/albums";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ImageCard } from "@/components/ImageCard";
 
 export default function AlbumDetailsScreen() {
   const { id } = useLocalSearchParams(); // id של האלבום מהמסלול
-  const router = useRouter();
 
   const [images, setImages] = useState<any[]>([]);
-  const [isMyAlbum, setIsMyAlbum] = useState(false);
 
   useEffect(() => {
     checkOwnershipAndLoadImages();
@@ -25,7 +24,6 @@ export default function AlbumDetailsScreen() {
         const myAlbumsRes = await getMyAlbums();
         const myAlbums = myAlbumsRes.data;
         const match = myAlbums.find((a: any) => a.id.toString() === id);
-        setIsMyAlbum(!!match);
 
         // לפי השייכות נביא את התמונות
         if (match) {
@@ -54,13 +52,17 @@ export default function AlbumDetailsScreen() {
       ) : (
         <View style={styles.grid}>
           {images.map((img) => (
-            <Pressable
-              key={img.id}
-              onPress={() => router.push(`/image/${img.id}`)}
-            >
-              <Image source={{ uri: img.url }} style={styles.image} />
-              <Text style={styles.caption}>{img.name}</Text>
-            </Pressable>
+            <ImageCard key = {img.id}
+            from="albumsimages"
+            id={img.id}
+            url={img.url}
+            name={img.name}
+            user_name={img.user_name}
+            is_blocked={img.is_blocked}
+            is_public={img.is_public}
+            album_id={img.album_id}
+            isAdmin={false}
+          />
           ))}
         </View>
       )}
@@ -72,21 +74,5 @@ const styles = StyleSheet.create({
   container: { padding: 20, alignItems: "center" },
   title: { fontSize: 22, fontWeight: "bold", marginBottom: 15 },
   noImages: { fontSize: 16, color: "gray", marginTop: 20 },
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: 10,
-  },
-  image: {
-    width: 150,
-    height: 150,
-    borderRadius: 10,
-    marginBottom: 5,
-  },
-  caption: {
-    textAlign: "center",
-    fontSize: 14,
-    fontWeight: "500",
-  },
+  grid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 10 }
 });
