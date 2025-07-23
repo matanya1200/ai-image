@@ -4,6 +4,7 @@ from utils.auth_utils import get_current_user
 from utils.permissions import admin_only, self_only, ensure_not_blocked
 from database import get_connection
 from fastapi.security import OAuth2PasswordBearer
+from datetime import datetime
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -60,7 +61,13 @@ def block_user(data: UpdateBlockRequest, user=Depends(get_current_user)):
     admin_only(user)
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("UPDATE users SET is_blocked = %s WHERE email = %s AND role = 'user'", (data.is_blocked, data.email))
+
+    if data.is_blocked:
+        blocked_at = datetime.now()
+    else:
+        blocked_at = None
+
+    cursor.execute("UPDATE users SET is_blocked = %s, blocked_at = %s WHERE email = %s AND role = 'user'", (data.is_blocked, blocked_at, data.email))
     conn.commit()
     cursor.close()
     conn.close()

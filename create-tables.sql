@@ -9,7 +9,8 @@ CREATE TABLE users (
   password_hash TEXT NOT NULL,
   role ENUM('user', 'admin') DEFAULT 'user',
   is_blocked BOOLEAN DEFAULT FALSE,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  blocked_at TIMESTAMP
 );
 
 CREATE TABLE comments (
