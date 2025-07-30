@@ -9,14 +9,18 @@ from controllers.images import router as images_router
 from controllers.commits import router as commits_router
 from controllers.albums import router as albums_router
 
+# ייבוא של הפונקציה בדיקת תגובות
+from utils.background_commits_jobs import schedule_tasks
+
 # ייבוא של משימות רקע
-from utils.ackground_jobs import schedule_unblock_task
+from utils.background_block_jobs import schedule_unblock_task
 
 app = FastAPI(title="AI Image Generator API")
 
 # 🎯 מפעיל את המשימה עם עליית השרת
 @app.on_event("startup")
 def on_startup():
+    schedule_tasks()
     schedule_unblock_task()
 
 # הגדרות CORS לפיתוח (אפשר לשנות לכתובות ספציפיות בפרודקשן)

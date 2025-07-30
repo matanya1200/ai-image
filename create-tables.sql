@@ -51,6 +51,15 @@ CREATE TABLE images (
   FOREIGN KEY (album_id) REFERENCES albums(id) ON DELETE SET NULL
 );
 
+CREATE TABLE notifications (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  is_read BOOLEAN DEFAULT FALSE
+);
+
+
 -- יצירת admin 
 INSERT INTO users (name, email, password_hash, role) 
 VALUES 
