@@ -101,11 +101,11 @@ def delete_my_user(user=Depends(get_current_user)):
 
 
 @router.get("/notifications/not_read")
-def get_user_notifications(user=Depends(get_current_user)):
+def get_user_unread_notifications(user=Depends(get_current_user)):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT id, message, created_at 
+        SELECT id, message, created_at, is_read
         FROM notifications 
         WHERE user_id = %s AND is_read = FALSE 
         ORDER BY created_at DESC
@@ -113,7 +113,7 @@ def get_user_notifications(user=Depends(get_current_user)):
     results = cursor.fetchall()
     cursor.close()
     conn.close()
-    return [{"id": r[0], "message": r[1], "created_at": r[2]} for r in results]
+    return [{"id": r[0], "message": r[1], "created_at": r[2], "is_read": r[3]} for r in results]
 
 
 @router.get("/notifications")
@@ -121,7 +121,7 @@ def get_user_notifications(user=Depends(get_current_user)):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT id, message, created_at 
+        SELECT id, message, created_at, is_read
         FROM notifications 
         WHERE user_id = %s
         ORDER BY created_at DESC
@@ -129,7 +129,7 @@ def get_user_notifications(user=Depends(get_current_user)):
     results = cursor.fetchall()
     cursor.close()
     conn.close()
-    return [{"id": r[0], "message": r[1], "created_at": r[2]} for r in results]
+    return [{"id": r[0], "message": r[1], "created_at": r[2], "is_read": r[3]} for r in results]
 
 
 @router.put("/notifications/{notification_id}/read")

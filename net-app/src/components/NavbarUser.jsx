@@ -32,6 +32,10 @@ function NavbarUser({ role, onLogout }) {
               <i className="bi bi-house-fill me-1"></i>
               בית
             </Link>
+            <Link className="nav-link" to="/notifications">
+              <i className="bi bi-house-fill me-1"></i>
+              הודעות
+            </Link>
             <Link className="nav-link" to="/my-images">
               <i className="bi bi-images me-1"></i>
               התמונות שלי

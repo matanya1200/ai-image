@@ -9,7 +9,7 @@ def scan_toxic_comments():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id, user_id, comment FROM commits WHERE updated_at >= %s", (yesterday,))
+    cursor.execute("SELECT id, user_id, comment FROM comments WHERE updated_at >= %s", (yesterday,))
     comments = cursor.fetchall()
 
     for comment_id, user_id, text in comments:
@@ -21,7 +21,7 @@ def scan_toxic_comments():
             continue
 
         # מחיקת תגובה
-        cursor.execute("DELETE FROM commits WHERE id = %s", (comment_id,))
+        cursor.execute("DELETE FROM comments WHERE id = %s", (comment_id,))
         # יצירת התראה למשתמש
         msg = f"תגובה שלך הוסרה {reason}"
         cursor.execute(

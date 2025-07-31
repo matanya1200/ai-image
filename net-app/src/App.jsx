@@ -19,6 +19,7 @@ import MyAlbums from "./pages/albums/MyAlbums";
 import EditAlbum from "./pages/albums/EditAlbum";
 import CreateAlbum from "./pages/albums/CreateAlbum";
 import BlockedImagesAdmin from "./pages/images/BlockedImagesAdmin";
+import Notifications from "./pages/users/Notifications"
 
 
 function App() {
@@ -74,6 +75,7 @@ function App() {
               </>
             )}
             <Route path="/profile" element={<MyProfile />} />
+            <Route path="/notifications" element={<Notifications />} />
             <Route path="/my-images" element={<MyImages />} />
             <Route path="/add-image" element={<AddImage />} />
             <Route path="/images/:id" element={<ImageDetails userId={userId}/>} />

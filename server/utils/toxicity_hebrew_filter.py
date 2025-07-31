@@ -1,4 +1,4 @@
-from hebrew_toxic_words import TOXIC_WORDS
+from utils.hebrew_toxic_words import TOXIC_WORDS
 import re
 
 def is_hebrew_toxic(text: str) -> bool:

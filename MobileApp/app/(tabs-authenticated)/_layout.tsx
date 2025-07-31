@@ -46,6 +46,16 @@ export default function AuthenticatedLayout() {
           )
         }}
       />
+      
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: "הודעות",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="notifications" size={size} color={color} />
+          ),
+        }}
+      />
 
       <Tabs.Screen 
         name="albums" 

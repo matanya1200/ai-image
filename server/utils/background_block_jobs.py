@@ -11,7 +11,7 @@ def unblock_users():
         SELECT id FROM users
         WHERE is_blocked = TRUE
           AND blocked_at IS NOT NULL
-          AND blocked_at <= NOW() - INTERVAL '7 days'
+          AND blocked_at <= DATE_SUB(NOW(), INTERVAL 7 DAY)
     """)
     users_to_unblock = cursor.fetchall()
 
@@ -21,7 +21,7 @@ def unblock_users():
             blocked_at = NULL
         WHERE is_blocked = TRUE
           AND blocked_at IS NOT NULL
-          AND blocked_at <= NOW() - INTERVAL '7 days'
+          AND blocked_at <= DATE_SUB(NOW(), INTERVAL 7 DAY)
     """)
 
     for user in users_to_unblock:
