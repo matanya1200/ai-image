@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { getImageById, getImageRating } from "../../api/images";
 import { getCommentsByImage, deleteComment } from "../../api/comments";
 import { getMyProfile } from "../../api/users";
+import { getCloudinarySettings, uploadToCloudinary } from "../../api/cloudinary";
 
 function ImageDetails({userId}) {
   const { id } = useParams(); //image_id
@@ -12,6 +13,7 @@ function ImageDetails({userId}) {
   const [rating, setRating] = useState(null);
   const [page, setPage] = useState(1);
   const [block, setBlock] = useState(false);
+  const [hasCloudinarySettings, setHasCloudinarySettings] = useState(false);
 
   const navigate = useNavigate();
 
@@ -19,11 +21,23 @@ function ImageDetails({userId}) {
     fetchUserBlock();
     fetchImage();
     fetchRating();
+    checkCloudinarySettings();
   }, []);
 
   useEffect(() => {
     fetchComments();
   }, [page]);
+
+  const checkCloudinarySettings = async () => {
+    try {
+      const res = await getCloudinarySettings();
+      if (res.data.cloud_name && res.data.api_key) {
+        setHasCloudinarySettings(true);
+      }
+    } catch (e) {
+      console.log("אין הגדרות Cloudinary", e);
+    }
+  };
 
   const fetchUserBlock = async () => {
     const res = await getMyProfile();
@@ -105,6 +119,35 @@ function ImageDetails({userId}) {
                 </div>
                 
                 <div className="mt-3">
+                  <a 
+                    href={image.url} 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-success me-2"
+                  >
+                    <i className="bi bi-download me-2"></i>
+                    פתח תמונה בכרטיסיה חדשה
+                  </a>
+                  {hasCloudinarySettings && (
+                    <button
+                      className="btn btn-success me-2"
+                      onClick={async () => {
+                        try {
+                          const fixedUrl = image.url.replace("localhost", "10.0.0.18");
+                          await uploadToCloudinary(fixedUrl, image.name);
+                          alert("התמונה הועלתה ל־Cloudinary בהצלחה!");
+                        } catch (err) {
+                          console.error(err);
+                          alert("שגיאה בהעלאת התמונה ל־Cloudinary.");
+                        }
+                      }}
+                    >
+                      ☁️ העלה ל־Cloudinary
+                    </button>
+                  )}
+                  {!hasCloudinarySettings && (
+                    <p className="text-muted mt-2">כדי להעלות ל־Cloudinary יש להוסיף הגדרות בפרופיל המשתמש.</p>
+                  )}
                   {!block && (
                     <Link 
                       to={`/add-comment/${id}`}
@@ -120,7 +163,7 @@ function ImageDetails({userId}) {
                       משתמש חסום לא יכול להוסיף תגובה
                     </div>
                   )}
-                  {image.is_blocked &&(
+                  {image.is_blocked == true &&(
                     <div className="alert alert-warning">
                       <i className="bi bi-exclamation-triangle me-2"></i>
                       התמונה הזו חסומה

@@ -59,6 +59,13 @@ CREATE TABLE notifications (
   is_read BOOLEAN DEFAULT FALSE
 );
 
+CREATE TABLE cloudinary_settings (
+    user_id INT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    cloud_name VARCHAR(100) NOT NULL,
+    api_key VARCHAR(100) NOT NULL,
+    api_secret TEXT NOT NULL
+);
+
 
 -- יצירת admin 
 INSERT INTO users (name, email, password_hash, role) 

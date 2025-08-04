@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getCloudinarySettings, saveCloudinarySettings, deleteCloudinarySettings } from "../../api/cloudinary";
 import { getMyProfile, updateMyName, deleteMyUser} from "../../api/users";
 import { useNavigate } from "react-router-dom";
 
@@ -7,10 +8,18 @@ function MyProfile() {
   const [newName, setNewName] = useState("");
   const [block, setBlock] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const [cloudName, setCloudName] = useState("");
+  const [cloudKey, setCloudKey] = useState("");
+  const [cloudSecret, setCloudSecret] = useState("");
+  const [cloudExists, setCloudExists] = useState(false);
+  const [cloudLoading, setCloudLoading] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchProfile();
+    fetchCloudinarySettings();
   }, []);
 
   const fetchProfile = async () => {
@@ -25,6 +34,21 @@ function MyProfile() {
     } catch (error) {
       console.error(error);
       setLoading(false);
+    }
+  };
+
+    const fetchCloudinarySettings = async () => {
+    try {
+      const cloud = await getCloudinarySettings();
+      setCloudExists(true);
+      setCloudName(cloud.data.cloud_name);
+      setCloudKey(cloud.data.api_key);
+      setCloudSecret("הסוד קיים אך סודי ולכן לא ניתן לצפייה");
+    } catch (error) {
+      setCloudExists(false);
+      setCloudName("");
+      setCloudKey("");
+      setCloudSecret("");
     }
   };
 
@@ -52,6 +76,38 @@ function MyProfile() {
       }
     }
   }
+
+  const handleSaveCloudinary = async () => {
+    setCloudLoading(true);
+    try {
+      console.log("Saving Cloudinary settings:", cloudName, cloudKey, cloudSecret);
+      await saveCloudinarySettings(cloudName, cloudKey, cloudSecret);
+      alert("הפרטים נשמרו בהצלחה");
+      fetchCloudinarySettings();
+    } catch (error) {
+      console.error(error);
+      alert("שגיאה בשמירת פרטי Cloudinary");
+    }
+    setCloudLoading(false);
+  };
+
+  const handleDeleteCloudinary = async () => {
+    if (window.confirm("האם אתה בטוח שברצונך למחוק את פרטי Cloudinary?")) {
+      setCloudLoading(true);
+      try {
+        await deleteCloudinarySettings();
+        alert("הפרטים נמחקו בהצלחה");
+        setCloudExists(false);
+        setCloudName("");
+        setCloudKey("");
+        setCloudSecret("");
+      } catch (error) {
+        console.error(error);
+        alert("שגיאה במחיקת פרטי Cloudinary");
+      }
+      setCloudLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -176,6 +232,86 @@ function MyProfile() {
                             </button>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Cloudinary Settings */}
+                  {!block && (
+                    <div className="card mb-4">
+                      <div className="card-header bg-info text-white">
+                        <h5 className="mb-0">
+                          <i className="bi bi-cloud-fill me-2"></i>
+                          הגדרות Cloudinary
+                        </h5>
+                      </div>
+                      <div className="card-body">
+                        <div className="row g-3">
+                          <div className="col-md-6">
+                            <label className="form-label">Cloud Name</label>
+                            <input 
+                              type="text"
+                              className="form-control"
+                              value={cloudName}
+                              onChange={(e) => setCloudName(e.target.value)}
+                              placeholder="הכנס Cloud Name"
+                            />
+                          </div>
+                          <div className="col-md-6">
+                            <label className="form-label">API Key</label>
+                            <input 
+                              type="text"
+                              className="form-control"
+                              value={cloudKey}
+                              onChange={(e) => setCloudKey(e.target.value)}
+                              placeholder="הכנס API Key"
+                            />
+                          </div>
+                          <div className="col-12">
+                            <label className="form-label">API Secret</label>
+                            <input 
+                              type="password"
+                              className="form-control"
+                              value={cloudSecret}
+                              onChange={(e) => setCloudSecret(e.target.value)}
+                              placeholder="הכנס API Secret"
+                              disabled={cloudSecret === "הסוד קיים אך סודי ולכן לא ניתן לצפייה"}
+                            />
+                            {cloudSecret === "הסוד קיים אך סודי ולכן לא ניתן לצפייה" && (
+                              <small className="text-muted">הסוד הקיים מוסתר מטעמי אבטחה</small>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="d-flex gap-2 mt-3">
+                          <button 
+                            className="btn btn-success"
+                            onClick={handleSaveCloudinary}
+                            disabled={cloudLoading || !cloudName.trim() || !cloudKey.trim() || !cloudSecret.trim()}
+                          >
+                            {cloudLoading && <span className="spinner-border spinner-border-sm me-2" role="status"></span>}
+                            <i className="bi bi-check-lg me-1"></i>
+                            {cloudExists ? 'עדכן פרטי Cloudinary' : 'הוסף פרטי Cloudinary'}
+                          </button>
+                          
+                          {cloudExists && (
+                            <button 
+                              className="btn btn-outline-danger"
+                              onClick={handleDeleteCloudinary}
+                              disabled={cloudLoading}
+                            >
+                              <i className="bi bi-trash-fill me-1"></i>
+                              מחק פרטי Cloudinary
+                            </button>
+                          )}
+                        </div>
+                        
+                        {cloudExists && (
+                          <div className="alert alert-success mt-3 mb-0" role="alert">
+                            <i className="bi bi-check-circle-fill me-2"></i>
+                            פרטי Cloudinary קיימים במערכת
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}

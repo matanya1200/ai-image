@@ -19,6 +19,8 @@ import { ImageCard } from "@/components/ImageCard";
 import { CommentCard } from "@/components/CommentCard";
 import { Pagination } from "@/components/pagination";
 import { PrimaryButton } from "@/components/Button";
+import { downloadImageToDevice } from "@/utils/downloadImage";
+import { uploadToCloudinary, getCloudinarySettings } from "@/api/cloudinary";
 
 export default function ImageDetailsScreen() {
   const { id } = useLocalSearchParams();
@@ -30,6 +32,8 @@ export default function ImageDetailsScreen() {
   const [myId, setMyId] = useState<number | null>(null);
   const [isBlocked, setIsBlocked] = useState(false);
   const [page, setPage] = useState(1);
+  const [hasCloudinary, setHasCloudinary] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [pagination, setPagination] = useState({
     current_page: 1,
     total_pages: 1,
@@ -39,7 +43,17 @@ export default function ImageDetailsScreen() {
 
   useEffect(() => {
     fetchAll();
+    checkCloudinary();
   }, []);
+
+  const checkCloudinary = async () => {
+    try {
+      const res = await getCloudinarySettings();
+      if (res.data.cloud_name && res.data.api_key) {
+        setHasCloudinary(true);
+      }
+    } catch {}
+  };
 
   const fetchAll = async () => {
     const imageRes = await getImageById(imageId);
@@ -95,12 +109,36 @@ export default function ImageDetailsScreen() {
             rating={rating}
           />
 
-          {!isBlocked && (
+          <View style={{ gap: 10 }}>
             <PrimaryButton
-              title="💬 הוסף תגובה"
-              onPress={() => router.push(`/comment/add/${imageId}`)}
+              title="📥 הורד תמונה"
+              onPress={() => downloadImageToDevice(image.url)}
             />
-          )}
+            {!isBlocked && (
+              <PrimaryButton
+                title="💬 הוסף תגובה"
+                onPress={() => router.push(`/comment/add/${imageId}`)}
+              />
+            )}
+            {hasCloudinary && (
+              <Button
+                title="☁️ העלה ל־Cloudinary"
+                disabled={uploading}
+                onPress={async () => {
+                  try {
+                    setUploading(true);
+                    const fixedUrl = image.url.replace("localhost", "10.0.0.18");
+                    await uploadToCloudinary(fixedUrl, image.name);
+                    Alert.alert("הצלחה", "התמונה הועלתה ל־Cloudinary");
+                  } catch (err) {
+                    Alert.alert("שגיאה", "לא ניתן להעלות את התמונה");
+                  } finally {
+                    setUploading(false);
+                  }
+                }}
+              />
+            )}
+          </View>
 
           {(image.is_blocked == 1) && (
             <Text>התמונה הזו חסומה</Text>
@@ -126,12 +164,14 @@ export default function ImageDetailsScreen() {
                   />
                 </View>
             ))}
+            {comments.length > 0 && (
             <Pagination
               currentPage={pagination.current_page}
               totalPages={pagination.total_pages}
               onNext={nextPage}
               onPrev={prevPage}
             />  
+          )}
         </>
       )}
     </ScrollView>

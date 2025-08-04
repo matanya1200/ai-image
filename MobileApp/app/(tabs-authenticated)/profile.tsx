@@ -1,20 +1,71 @@
-import { View, Text, Alert, StyleSheet } from "react-native";
+import { View, Text, Alert, StyleSheet, ScrollView } from "react-native";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { logout } from "@/api/auth"
 import { getMyProfile, updateMyName, deleteMyUser } from "@/api/users";
 import { UserCard } from "@/components/UserCard"
 import { PageHeader } from "@/components/PageHeader"
+import {
+  getCloudinarySettings,
+  saveCloudinarySettings,
+  deleteCloudinarySettings,
+} from "@/api/cloudinary";
+import { CloudinarySettings } from "@/components/CloudinarySettings"
 
 export default function ProfileScreen() {
   const [profile, setProfile] = useState<any>(null);
   const [newName, setNewName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [name, setName] = useState("");
+  const [apiKey, setApiKey] = useState("");
+  const [secret, setSecret] = useState("");
+  const [hasSettings, setHasSettings] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     loadProfile();
+    loadSettings();
   }, []);
+
+  const loadSettings = async () => {
+    try {
+      const res = await getCloudinarySettings();
+      setName(res.data.cloud_name || "");
+      setApiKey(res.data.api_key || "");
+      if (res.data.cloud_name) setSecret("הסוד קיים אך סודי ולכן לא ניתן לצפייה");
+      setHasSettings(!!res.data.cloud_name);
+      console.log("Cloudinary settings loaded:", res.data);
+    } catch (e) {
+      console.log("אין הגדרות Cloudinary");
+    }
+  };
+
+  const handleSaveCloudinary = async () => {
+    try {
+      await saveCloudinarySettings(name, apiKey, secret === "**********" ? undefined : secret);
+      Alert.alert("הצלחה", "ההגדרות נשמרו בהצלחה");
+      loadSettings();
+    } catch (e) {
+      Alert.alert("שגיאה", "לא ניתן לשמור את ההגדרות");
+    }
+  };
+
+  const handleDeleteCloudinary = async () => {
+    Alert.alert("אישור", "האם למחוק את הגדרות Cloudinary?", [
+      { text: "ביטול", style: "cancel" },
+      {
+        text: "מחק",
+        style: "destructive",
+        onPress: async () => {
+          await deleteCloudinarySettings();
+          setName("");
+          setApiKey("");
+          setSecret("");
+          setHasSettings(false);
+        },
+      },
+    ]);
+  };
 
   const loadProfile = async () => {
     try {
@@ -75,8 +126,8 @@ export default function ProfileScreen() {
   }
 
   const isBlocked = !!profile.is_blocked;
-
   return (
+    <ScrollView contentContainerStyle={styles.container}>
     <View style={styles.container}>
       <PageHeader title="הפרטים שלי"/>
       <UserCard
@@ -93,7 +144,20 @@ export default function ProfileScreen() {
         handleDelete={handleDelete}
         logout={logout}
       />
+      
+      <CloudinarySettings
+        name={name}
+        apiKey={apiKey}
+        secret={secret}
+        hasSettings={hasSettings}
+        setName={setName}
+        setApiKey={setApiKey}
+        setSecret={setSecret}
+        handleSave={handleSaveCloudinary}
+        handleDelete={handleDeleteCloudinary}
+      />
     </View>
+    </ScrollView>
   );
 }
 
