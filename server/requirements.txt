@@ -1,5 +1,4 @@
 fastapi -
-fastapi "python-jose[cryptography]" 
 uvicorn[standard] -
 gunicorn
 bcrypt -
@@ -14,6 +13,6 @@ diffusers -
 transformers -
 torch - 
 accelerate
-transformers torch
+transformers
 
 

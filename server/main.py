@@ -20,7 +20,9 @@ app = FastAPI(title="AI Image Generator API")
 # 🎯 מפעיל את המשימה עם עליית השרת
 @app.on_event("startup")
 def on_startup():
+    print("chacking responses...")
     schedule_tasks()
+    print("Scheduling unblock task...")
     schedule_unblock_task()
 
 # הגדרות CORS לפיתוח (אפשר לשנות לכתובות ספציפיות בפרודקשן)
