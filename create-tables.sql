@@ -10,7 +10,9 @@ CREATE TABLE users (
   role ENUM('user', 'admin') DEFAULT 'user',
   is_blocked BOOLEAN DEFAULT FALSE,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  blocked_at TIMESTAMP
+  blocked_at TIMESTAMP,
+  is_logged_in BOOLEAN DEFAULT FALSE,
+  last_login TIMESTAMP DEFAULT NULL,
 );
 
 CREATE TABLE comments (

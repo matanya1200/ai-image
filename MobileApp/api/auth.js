@@ -19,6 +19,7 @@ export const register = async (name, email, password) => {
 };
 
 export const logout = async () => {
+  await api.post("/auth/logout");
   await AsyncStorage.removeItem("token");
   await AsyncStorage.removeItem("user_id");
   await AsyncStorage.removeItem("role");

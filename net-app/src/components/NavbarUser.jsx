@@ -1,12 +1,18 @@
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../api/auth";
 
 function NavbarUser({ role, onLogout }) {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try{
+    await logout();
     onLogout();
     navigate("/");
+    } catch (err) {
+      console.error("שגיאה בהתנתקות", err);
+    }
   };
 
   return (

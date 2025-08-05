@@ -16,11 +16,18 @@ from utils.background_commits_jobs import schedule_tasks
 # ייבוא של משימות רקע
 from utils.background_block_jobs import schedule_unblock_task
 
+# ייבוא של משימות רקע
+from utils.background_users_jobs import logout_inactive_users
+
 app = FastAPI(title="AI Image Generator API")
 
 # 🎯 מפעיל את המשימה עם עליית השרת
 @app.on_event("startup")
 def on_startup():
+    print("Starting background tasks...")
+    # הפעלת משימות רקע
+    print("Logout users...")
+    logout_inactive_users()
     print("chacking responses...")
     schedule_tasks()
     print("Scheduling unblock task...")
