@@ -75,15 +75,18 @@ export function UserCard({
             disabled={is_blocked}
           />
           <DangerButton
-            title="🗑️ מחיקת משתמש"
-            onPress={handleDelete}
-            disabled={is_blocked}
-          />
-          <DangerButton
             title="🚪 התנתקות"
             onPress={logout}
             disabled={is_blocked}
           />
+          <View style={styles.daleteArea}>
+            <Text>מחיקת החשבון הינה פעולה בלתי הפיכה. כל המידע שלך יימחק לצמיתות.</Text>
+            <DangerButton
+              title="🗑️ מחיקת משתמש"
+              onPress={handleDelete}
+              disabled={is_blocked}
+            />
+          </View>
         </View>
       )}
     </View>
@@ -117,5 +120,17 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 6,
     marginVertical: 10,
+  },
+  daleteArea: {
+    gap: 10,
+    fontSize: 14,
+    color: "#ff6b35",
+    backgroundColor: "#fff3f0",
+    padding: 10,
+    borderRadius: 6,
+    marginBottom: 10,
+    textAlign: "center",
+    borderWidth: 1,
+    borderColor: "#ffccb8",
   },
 });

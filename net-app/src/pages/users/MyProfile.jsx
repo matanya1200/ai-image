@@ -246,36 +246,46 @@ function MyProfile() {
                         </h5>
                       </div>
                       <div className="card-body">
+                        {/* Readonly Notice */}
+                        {cloudExists && (
+                          <div className="alert alert-warning" role="alert">
+                            <i className="bi bi-shield-lock-fill me-2"></i>
+                            ההגדרות הקיימות מוגנות מעריכה. למען האבטחה, יש למחוק את ההגדרות הקיימות ולהכניס פרטים חדשים.
+                          </div>
+                        )}
+
                         <div className="row g-3">
                           <div className="col-md-6">
                             <label className="form-label">Cloud Name</label>
                             <input 
                               type="text"
-                              className="form-control"
+                              className={`form-control ${cloudExists ? 'bg-light text-muted' : ''}`}
                               value={cloudName}
                               onChange={(e) => setCloudName(e.target.value)}
                               placeholder="הכנס Cloud Name"
+                              disabled={cloudExists}
                             />
                           </div>
                           <div className="col-md-6">
                             <label className="form-label">API Key</label>
                             <input 
                               type="text"
-                              className="form-control"
+                              className={`form-control ${cloudExists ? 'bg-light text-muted' : ''}`}
                               value={cloudKey}
                               onChange={(e) => setCloudKey(e.target.value)}
                               placeholder="הכנס API Key"
+                              disabled={cloudExists}
                             />
                           </div>
                           <div className="col-12">
                             <label className="form-label">API Secret</label>
                             <input 
                               type="password"
-                              className="form-control"
+                              className={`form-control ${cloudExists ? 'bg-light text-muted' : ''}`}
                               value={cloudSecret}
                               onChange={(e) => setCloudSecret(e.target.value)}
                               placeholder="הכנס API Secret"
-                              disabled={cloudSecret === "הסוד קיים אך סודי ולכן לא ניתן לצפייה"}
+                              disabled={cloudExists}
                             />
                             {cloudSecret === "הסוד קיים אך סודי ולכן לא ניתן לצפייה" && (
                               <small className="text-muted">הסוד הקיים מוסתר מטעמי אבטחה</small>
@@ -284,22 +294,23 @@ function MyProfile() {
                         </div>
                         
                         <div className="d-flex gap-2 mt-3">
-                          <button 
-                            className="btn btn-success"
-                            onClick={handleSaveCloudinary}
-                            disabled={cloudLoading || !cloudName.trim() || !cloudKey.trim() || !cloudSecret.trim()}
-                          >
-                            {cloudLoading && <span className="spinner-border spinner-border-sm me-2" role="status"></span>}
-                            <i className="bi bi-check-lg me-1"></i>
-                            {cloudExists ? 'עדכן פרטי Cloudinary' : 'הוסף פרטי Cloudinary'}
-                          </button>
-                          
-                          {cloudExists && (
+                          {!cloudExists ? (
+                            <button 
+                              className="btn btn-success"
+                              onClick={handleSaveCloudinary}
+                              disabled={cloudLoading || !cloudName.trim() || !cloudKey.trim() || !cloudSecret.trim()}
+                            >
+                              {cloudLoading && <span className="spinner-border spinner-border-sm me-2" role="status"></span>}
+                              <i className="bi bi-check-lg me-1"></i>
+                              הוסף פרטי Cloudinary
+                            </button>
+                          ) : (
                             <button 
                               className="btn btn-outline-danger"
                               onClick={handleDeleteCloudinary}
                               disabled={cloudLoading}
                             >
+                              {cloudLoading && <span className="spinner-border spinner-border-sm me-2" role="status"></span>}
                               <i className="bi bi-trash-fill me-1"></i>
                               מחק פרטי Cloudinary
                             </button>
