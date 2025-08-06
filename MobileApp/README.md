@@ -51,9 +51,9 @@
 * להפעיל את האפליקציה על אמולטור אנדרואיד (Android Emulator) או סימולטור iOS (iOS Simulator) המותקנים במחשב שלך.
 
 ---
-```
-## 📁 מבנה תיקיות
 
+## 📁 מבנה תיקיות
+```
 מבנה התיקיות של אפליקציית המובייל הוא כדלקמן:
 
 MobileApp/
