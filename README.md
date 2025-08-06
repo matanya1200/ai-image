@@ -98,6 +98,8 @@ graph TB
     C --> G
 ```
 
+---
+
 ### 🗄️ Database Schema
 
 | Table | Purpose | Key Features |
