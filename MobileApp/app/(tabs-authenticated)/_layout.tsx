@@ -46,6 +46,16 @@ export default function AuthenticatedLayout() {
           )
         }}
       />
+
+      <Tabs.Screen
+        name="chat-ai"
+        options={{
+          title: "שיחה עם AI",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="chatbubbles-outline" size={size} color={color} />
+          ),
+        }}
+      />
       
       <Tabs.Screen
         name="notifications"

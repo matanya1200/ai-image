@@ -20,6 +20,7 @@ import EditAlbum from "./pages/albums/EditAlbum";
 import CreateAlbum from "./pages/albums/CreateAlbum";
 import BlockedImagesAdmin from "./pages/images/BlockedImagesAdmin";
 import Notifications from "./pages/users/Notifications"
+import ChatAI from "./pages/ai/ChatAI";
 
 
 function App() {
@@ -85,6 +86,7 @@ function App() {
             <Route path="/my-albums" element={<MyAlbums />} />
             <Route path="/albums/edit/:id" element={<EditAlbum />} />
             <Route path="/albums/new" element={<CreateAlbum />} />
+            <Route path="/chat-ai" element={<ChatAI />} />
           </>
         )}
       </Routes>

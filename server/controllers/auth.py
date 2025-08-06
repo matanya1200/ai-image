@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from utils.auth_utils import hash_password, verify_password, create_access_token, get_current_user
 from database import get_connection
 import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])

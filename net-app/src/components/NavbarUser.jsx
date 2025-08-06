@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../api/auth";
+import { clearAIHistory } from "../api/ai";
 
 function NavbarUser({ role, onLogout }) {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ function NavbarUser({ role, onLogout }) {
   const handleLogout = async () => {
     try{
     await logout();
+    await clearAIHistory(); // ניקוי היסטוריית AI בעת התנתקות
     onLogout();
     navigate("/");
     } catch (err) {
@@ -37,6 +39,10 @@ function NavbarUser({ role, onLogout }) {
             <Link className="nav-link" to="/">
               <i className="bi bi-house-fill me-1"></i>
               בית
+            </Link>
+            <Link className="nav-link" to="/chat-ai">
+              <i className="bi bi-robot me-1"></i>
+              עוזר AI
             </Link>
             <Link className="nav-link" to="/notifications">
               <i className="bi bi-house-fill me-1"></i>

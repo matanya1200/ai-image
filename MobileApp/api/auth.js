@@ -20,6 +20,7 @@ export const register = async (name, email, password) => {
 
 export const logout = async () => {
   await api.post("/auth/logout");
+  await api.delete("/ai/clearHistory"); // ניקוי היסטוריית AI בעת התנתקות
   await AsyncStorage.removeItem("token");
   await AsyncStorage.removeItem("user_id");
   await AsyncStorage.removeItem("role");

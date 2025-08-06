@@ -9,6 +9,7 @@ from controllers.images import router as images_router
 from controllers.commits import router as commits_router
 from controllers.albums import router as albums_router
 from controllers.cloudinary import router as cloudinary_router
+from controllers.ai import router as ai_router
 
 # ייבוא של הפונקציה בדיקת תגובות
 from utils.background_commits_jobs import schedule_tasks
@@ -52,6 +53,7 @@ app.include_router(images_router)
 app.include_router(commits_router)
 app.include_router(albums_router)
 app.include_router(cloudinary_router)
+app.include_router(ai_router)
 
 
 # נקודת כניסה פשוטה לבדיקה

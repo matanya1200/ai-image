@@ -68,6 +68,16 @@ CREATE TABLE cloudinary_settings (
     api_secret TEXT NOT NULL
 );
 
+CREATE TABLE ai_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    timestamp DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
 
 -- יצירת admin 
 INSERT INTO users (name, email, password_hash, role) 
