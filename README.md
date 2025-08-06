@@ -307,20 +307,14 @@ We welcome contributions! Please follow these steps:
 
 For detailed specifications and technical documentation, refer to:
 📎 **אפליקציה לשיתוף תמונות.docx**
+[📎 אפליקציה לשיתוף תמונות.docx](https://github.com/matanya1200/ai-image/blob/main/%D7%90%D7%A4%D7%9C%D7%99%D7%A7%D7%A6%D7%99%D7%94%20%D7%9C%D7%A9%D7%99%D7%AA%D7%95%D7%A3%20%D7%AA%D7%9E%D7%95%D7%A0%D7%95%D7%AA.docx)
 
----
 
-## 📜 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
 
 ## 🆘 Support
 
-- **📧 Email:** support@ai-image.com
-- **🐛 Issues:** [GitHub Issues](https://github.com/your-repo/issues)
-- **💬 Discussions:** [GitHub Discussions](https://github.com/your-repo/discussions)
+- **📧 Email:** matanya.nabet@gmail.com
 
 ---
 
