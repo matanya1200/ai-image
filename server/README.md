@@ -16,6 +16,7 @@
 
 ---
 
+```
 ## 📁 מבנה תיקיות
 server/
 ├── ai/                      # מודלי AI ואינטגרציות (ollama, Gemini)
@@ -47,6 +48,7 @@ server/
 ├── database.py              # הגדרות חיבור לבסיס הנתונים
 ├── main.py                  # נקודת הכניסה של השרת (FastAPI app)
 └── requirements.txt         # רשימת התלויות של הפרויקט
+```
 
 ---
 

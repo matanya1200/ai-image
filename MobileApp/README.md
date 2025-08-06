@@ -51,7 +51,7 @@
 * להפעיל את האפליקציה על אמולטור אנדרואיד (Android Emulator) או סימולטור iOS (iOS Simulator) המותקנים במחשב שלך.
 
 ---
-
+```
 ## 📁 מבנה תיקיות
 
 מבנה התיקיות של אפליקציית המובייל הוא כדלקמן:
@@ -92,7 +92,7 @@ MobileApp/
 │   └── icons/
 ├── App.js                   # (ייתכן שלא קיים ב-Expo Router, main entry point)
 └── babel.config.js          # הגדרות Babel
-
+```
 
 ---
 
